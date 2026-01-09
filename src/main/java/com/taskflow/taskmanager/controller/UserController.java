@@ -1,8 +1,6 @@
 package com.taskflow.taskmanager.controller;
 
-import com.taskflow.taskmanager.domain.User;
-import com.taskflow.taskmanager.dto.UserResponse;
-import com.taskflow.taskmanager.repository.UserRepository;
+import com.taskflow.taskmanager.dto.response.UserResponse;
 import com.taskflow.taskmanager.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
