@@ -1,9 +1,10 @@
 package com.taskflow.taskmanager.service;
 
 import com.taskflow.taskmanager.domain.User;
-import com.taskflow.taskmanager.dto.UserResponse;
+import com.taskflow.taskmanager.dto.response.UserResponse;
 import com.taskflow.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -11,9 +12,23 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public User createUser(String name, String email, String rawPassword) {
+        String hashed = passwordEncoder.encode(rawPassword);
+        User user = new User(name, email, hashed);
+        return userRepository.save(user);
+    }
+
+    public User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     public List<UserResponse> getAllUsers() {
