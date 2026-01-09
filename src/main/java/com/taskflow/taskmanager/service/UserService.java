@@ -5,6 +5,7 @@ import com.taskflow.taskmanager.dto.response.UserResponse;
 import com.taskflow.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,11 +21,18 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
+    @Transactional
     public User createUser(String name, String email, String rawPassword) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
         String hashed = passwordEncoder.encode(rawPassword);
         User user = new User(name, email, hashed);
         return userRepository.save(user);
     }
+
 
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
