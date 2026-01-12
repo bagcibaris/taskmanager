@@ -6,6 +6,7 @@ import com.taskflow.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import com.taskflow.taskmanager.exception.EmailAlreadyExistsException;
 
 import java.util.List;
 
@@ -25,8 +26,9 @@ public class UserService {
     @Transactional
     public User createUser(String name, String email, String rawPassword) {
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new EmailAlreadyExistsException("This email is already in use");
         }
+
 
         String hashed = passwordEncoder.encode(rawPassword);
         User user = new User(name, email, hashed);
